@@ -1,0 +1,6 @@
+/kafka/secrets/kafka_server_jaas.conf
+/kafka/environments/kafka.env
+/kafka/secrets/*
+/certs/ca-key
+.env
+!kafka/secrets/.gitkeep

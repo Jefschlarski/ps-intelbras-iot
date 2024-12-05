@@ -1,0 +1,7 @@
+include:
+  - path: ./kafka/compose.yml
+    env_file: 
+      - ./kafka/prod.env
+  - path: ./mongo/compose.yml
+    env_file:
+      ./mongo/.env

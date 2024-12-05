@@ -1,0 +1,29 @@
+version: '3'
+
+volumes:
+  kafka-data:
+
+services:
+  kafka:
+    container_name: kafka
+    image: 'bitnami/kafka:latest'
+    hostname: ${HOST_NAME}
+    restart: always
+    ports:
+      - ${KAFKA_PORTS}
+    expose:
+      - ${KAFKA_UNSECURE_PORT}
+    env_file:
+      - ./kafka/environments/${KAFKA_ENV}/kafka.env
+    volumes:
+      - './kafka/secrets/kafka.keystore.jks:/opt/bitnami/kafka/config/certs/kafka.keystore.jks:ro'
+      - './kafka/secrets/kafka.truststore.jks:/opt/bitnami/kafka/config/certs/kafka.truststore.jks:ro'
+      - type: volume
+        source: kafka-data
+        target: /bitnami/kafka
+    networks:
+      - default
+
+networks:
+  default:
+    name: kafka_network
