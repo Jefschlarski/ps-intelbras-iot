@@ -1,66 +1,72 @@
-<h1>Processo seletivo Intelbras – Sistema de Mensageria para Telemetria Veicular.</h1> 
+# Processo seletivo Intelbras – Sistema de Mensageria para Telemetria Veicular
 
-<h2>Introdução:</h2> O objetivo deste projeto é realizar a estruturação de um sistema de mensageria para dados de telemetria veicular, através do desenvolvimento de duas aplicações de envio e recebimento de informações. 
+## Introdução
+O objetivo deste projeto é estruturar um sistema de mensageria para dados de telemetria veicular. O sistema é composto por diversas partes, como o **devices_mock**, **telemetry_producer**, **telemetry_consumer**, **monitor_api** e o **monitor** (frontend). As soluções foram desenvolvidas utilizando as tecnologias Go, Kafka, gRPC, Postgres e Next.js.
 
- 
+## Estrutura do Projeto
 
-<h2>Arquitetura do Sistema:</h2> O sistema deverá composto por duas aplicações independentes: 
- 
+Este projeto é composto pelos seguintes componentes:
 
-1.1. Aplicação de Publicação de Eventos: Esta aplicação será responsável por gerar e publicar eventos de telemetria veicular no Kafka. Ela deverá projetada para criar, em um frequência pré-estabelecida, eventos de telemetria dos veículos, processá-las e publicá-las em tópicos específicos do Kafka. A aplicação pode ser desenvolvida utilizando uma linguagem de programação de sua escolha (por exemplo, Golang, C++, Node.js, Python). 
- 
+### 1. **devices_mock** (Go)
+Um mock que gera dados de telemetria para simular as informações que serão enviadas para o produtor. Esse mock simula dispositivos que geram dados de forma contínua, como se fossem dispositivos reais de telemetria.
 
-1.2. Aplicação de Consumo de Informações: Essa aplicação será responsável por consumir as informações de telemetria veicular publicadas no Kafka. Ela receberá as mensagens dos tópicos relevantes e realizará o processamento necessário para análise, armazenamento ou exibição dos dados. Esta aplicação também pode ser desenvolvida utilizando uma linguagem de programação de sua escolha. 
- 
+### 2. **telemetry_producer** (Go)
+Aplicação que recebe os dados gerados pelo `devices_mock` via gRPC e os envia como mensagens para o Kafka onde serão consumidos por outros sistemas.
 
-<h2>Configuração do Kafka:</h2> Para este projeto, será necessário configurar um cluster do Kafka. O cluster deve ter ao menos um nó de broker para armazenar as mensagens e um ou mais tópicos configurados para receber os eventos de telemetria veicular. 
- 
+### 3. **telemetry_consumer** (Go)
+Consumidor que recebe as mensagens do Kafka, processa e salva os dados no banco de dados PostgreSQL para que possam ser acessadas posteriormente.
 
-<h2>Definição dos Eventos de Telemetria: </h2> O sistema deverá enviar mensagens no formato JSON, contendo as seguintes informações: Tipo da informação, horário de criação do evento, valor do sensor(este dado deve ser gerado aleatóriamente). 
- 
-Os seguintes eventos deverão ser contemplados pela aplicação: 
- 
-> -Velocidade do veículo 
-> 
-> -RPM do motor 
-> 
-> -Temperatura do motor 
-> 
-> -Nível de combustível  
-> 
-> -Quilometragem percorrida 
-> 
-> -Localização GPS 
-> 
-> -Status das luzes (faróis, lanternas, etc.) 
- 
-<h2> Fluxo de Funcionamento:</h2>
+### 4. **monitor_api** (Go)
+API que serve os dados do banco de dados PostgreSQL para o frontend, fornecendo informações sobre os dados de telemetria consumidos.
 
-O fluxo básico de funcionamento do sistema será o seguinte: 
+### 5. **monitor** (Next.js)
+Frontend simples feito com Next.js que consome os dados da `monitor_api` e exibe informações.
 
-<br/>
+## Fluxo do Sistema
 
-<b>Aplicação de Publicação de Eventos: </b>
+O sistema de mensageria é estruturado conforme o fluxo ilustrado na imagem abaixo:
 
-Gera informações de telemetria veicular simulando um dispositivo de sensoriamento. 
+![Fluxo do Projeto](fluxo.png)
 
-Processa e estrutura os dados conforme a definição dos eventos de telemetria. 
+### Descrição do Fluxo:
+1. **devices_mock** gera os dados de telemetria e os envia para o **telemetry_producer**.
+2. O **telemetry_producer** envia as mensagens para o **Kafka**.
+3. O **telemetry_consumer** consome as mensagens do Kafka e salva os dados no banco de dados **PostgreSQL**.
+4. A **monitor_api** fornece as informações armazenadas no banco para o frontend **monitor**.
+5. O **monitor** exibe as informações sobre os veículos e apresenta gráficos com base nos dados de telemetria.
 
-Publica as mensagens em tópicos do Kafka. 
+## Interface do Monitor
 
-<br/>
+O frontend foi desenvolvido utilizando **Next.js** e exibe uma interface simples, que permite visualizar os dados de telemetria com graficos separados por dispositivos.
 
- 
-<b> Aplicação de Consumo de Informações: </b>
+A página inicial do monitor pode ser vista abaixo:
 
-Conecta-se ao cluster do Kafka e subscreve-se aos tópicos relevantes. 
+![Página Inicial do Monitor](index.png)
 
-Recebe as mensagens de telemetria veicular do Kafka. 
+Além disso, os gráficos gerados para visualização dos dados de telemetria podem ser vistos na seguinte imagem:
 
-Processa as mensagens de acordo com as necessidades do projeto (análise, armazenamento, exibição, etc.). 
+![Gráficos de Telemetria](charts.png)
+
+## Como Rodar o Projeto
+
+### Pré-requisitos:
+- **Docker** (Para executar os containers)
+
+### Passos:
+
+1. **Clonar o repo**:
+   - Clonar o repositório 
+   ```
+    git clone https://github.com/Jefschlarski/ps-intelbras-iot.git
+   ```
+
+2. **Execute o container**:
+   - Após clonar o repo entre na sua pasta e execute o comando abaixo:
+    ```bash
+    docker compose up -d
+    ```
+
+4. **Acessar a Interface do Monitor**:
+   - Acesse a interface do monitor no navegador em `http://localhost:3000`.
 
 
-<h2>Resultado esperado: </h2>Sistema de envio e recebimento de dados em tempo-real, através de plataforma de streaming de dados Kafka com suporte a monitoramento de tráfego de informações através de Interface Gráfica(GUI, CLI, UI). 
-
- 
-A aplicação deverá ser publicada em uma página do Github e enviada para o e-mail paulo.cora@intelbras.com.br até o dia 09/12/2025 às 17:00h. 

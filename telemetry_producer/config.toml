@@ -1,0 +1,16 @@
+[kafka]
+server = "kafka:9092"
+topic = "telemetry"
+queue_buffering_max_messages = 10000000
+queue_buffering_max_kbytes = 1048576
+compression_type = "snappy"
+batch_size = 10
+
+[grpc]
+port = 50051
+workers = 4
+
+[log]
+file = "./logs/app.log"
+file_max_bytes = 50000
+file_backup_count = 5

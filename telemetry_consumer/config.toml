@@ -1,0 +1,18 @@
+[kafka]
+server = "kafka:9092"
+topic = "telemetry"
+group_id = "telemetry-1"
+batch_size = 10
+
+[log]
+file = "./logs/app.log"
+file_max_bytes = 50000
+file_backup_count = 5
+
+[database]
+host = "postgres"
+port = 5432
+user = "admin"
+pass = "admin"
+name = "postgres"
+drive = "postgres"
